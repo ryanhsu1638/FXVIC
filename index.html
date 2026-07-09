@@ -2,8 +2,21 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
 <title>匯倬FXVIC 零用金使用紀錄</title>
+
+<!-- PWA -->
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#070B14">
+<meta name="background-color" content="#070B14">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="FXVIC零用金">
+<link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="./icons/icon-512.png">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
@@ -36,13 +49,14 @@
     padding-bottom:88px;
     -webkit-font-smoothing:antialiased;
     overflow-x:hidden;
+    user-select:none;
   }
+  input, textarea{ user-select:text; }
   .num{font-family:'Chakra Petch', 'Noto Sans TC', sans-serif;}
 
-  /* ---------- Top bar ---------- */
   .topbar{
     position:sticky; top:0; z-index:40;
-    padding:18px 18px 12px;
+    padding:calc(18px + env(safe-area-inset-top)) 18px 12px;
     background:linear-gradient(180deg, rgba(7,11,20,0.95), rgba(7,11,20,0.75) 70%, transparent);
     backdrop-filter:blur(10px);
   }
@@ -57,11 +71,9 @@
   .brand-title{font-size:15px; font-weight:700; letter-spacing:.5px;}
   .brand-sub{font-size:11px; color:var(--sub); letter-spacing:1px;}
 
-  /* ---------- Layout ---------- */
   .page{max-width:520px; margin:0 auto; padding:6px 16px 20px;}
   .hide{display:none !important;}
 
-  /* ---------- Glass Card ---------- */
   .card{
     background:var(--glass);
     border:1px solid var(--glass-border);
@@ -82,7 +94,6 @@
     pointer-events:none;
   }
 
-  /* ---------- Signature: Balance Orb ---------- */
   .orb-wrap{display:flex; flex-direction:column; align-items:center; padding:26px 10px 18px; text-align:center;}
   .orb{
     width:172px; height:172px; border-radius:50%;
@@ -105,10 +116,9 @@
   @keyframes spin{to{transform:rotate(360deg);}}
   .orb-inner{position:relative; z-index:2;}
   .orb-label{font-size:11px; color:var(--sub); letter-spacing:2px; margin-bottom:6px;}
-  .orb-amount{font-size:30px; font-weight:700; color:var(--accent); text-shadow:0 0 18px rgba(76,201,240,0.6);}
+  .orb-amount{font-size:26px; font-weight:700; color:var(--accent); text-shadow:0 0 18px rgba(76,201,240,0.6);}
   .orb-date{margin-top:14px; font-size:12px; color:var(--sub); letter-spacing:1px;}
 
-  /* ---------- Stat grid ---------- */
   .grid2{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:14px;}
   .stat-tile{
     background:rgba(255,255,255,0.03);
@@ -116,14 +126,13 @@
     border-radius:14px; padding:12px 14px;
   }
   .stat-tile .lbl{font-size:11px; color:var(--sub); margin-bottom:4px; letter-spacing:.5px;}
-  .stat-tile .val{font-size:18px; font-weight:600;}
+  .stat-tile .val{font-size:17px; font-weight:600;}
   .val.income{color:var(--income);}
   .val.expense{color:var(--expense);}
   .val.balance{color:var(--accent);}
 
   .section-title{font-size:13px; color:var(--sub); letter-spacing:2px; margin:22px 2px 10px; text-transform:uppercase;}
 
-  /* ---------- Quick actions ---------- */
   .quick-row{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
   .quick-btn{
     display:flex; align-items:center; justify-content:center; gap:8px;
@@ -151,7 +160,6 @@
   .qs-cat{font-size:11px; color:var(--sub);}
   .qs-amt{font-family:'Chakra Petch'; font-weight:700; font-size:15px;}
 
-  /* ---------- Tabs (type switch) ---------- */
   .switch2{display:flex; background:rgba(255,255,255,0.04); border-radius:14px; padding:4px; border:1px solid rgba(255,255,255,0.06);}
   .switch2 button{
     flex:1; padding:10px; border:none; background:transparent; color:var(--sub);
@@ -160,7 +168,6 @@
   .switch2 button.active.income-a{background:linear-gradient(135deg, rgba(34,197,94,0.28), rgba(34,197,94,0.08)); color:var(--income); box-shadow:0 0 14px rgba(34,197,94,0.25);}
   .switch2 button.active.expense-a{background:linear-gradient(135deg, rgba(245,69,92,0.28), rgba(245,69,92,0.08)); color:var(--expense); box-shadow:0 0 14px rgba(245,69,92,0.25);}
 
-  /* ---------- Form ---------- */
   .field{margin-top:16px;}
   .field label{font-size:12px; color:var(--sub); letter-spacing:1px; display:block; margin-bottom:7px;}
   .field input[type=text], .field input[type=number], .field input[type=date], .field input[type=time], .field textarea, .field select{
@@ -190,7 +197,6 @@
     background:transparent; border:1px solid rgba(255,255,255,0.1);
   }
 
-  /* ---------- List ---------- */
   .search-box{position:relative; margin-bottom:14px;}
   .search-box input{
     width:100%; padding:12px 14px 12px 40px; border-radius:14px; border:1px solid rgba(255,255,255,0.09);
@@ -220,14 +226,12 @@
   .icon-btn:active{transform:scale(0.92);}
   .empty-state{text-align:center; padding:40px 10px; color:var(--sub); font-size:13px;}
 
-  /* ---------- Month switcher ---------- */
   .month-switch{display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;}
   .month-switch .m-btn{width:36px; height:36px; border-radius:10px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.09); color:var(--accent); display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:16px;}
   .month-switch .m-label{font-family:'Chakra Petch'; font-size:16px; font-weight:600; letter-spacing:1px;}
 
   canvas{max-width:100%;}
 
-  /* ---------- Bottom nav ---------- */
   .navbar{
     position:fixed; bottom:0; left:0; right:0; z-index:50;
     background:rgba(9,14,24,0.85); backdrop-filter:blur(18px);
@@ -242,7 +246,6 @@
   .nav-item .ic{font-size:18px;}
   .nav-item.active{color:var(--tech); text-shadow:0 0 10px rgba(0,191,255,0.6);}
 
-  /* ---------- Modal ---------- */
   .modal-bg{
     position:fixed; inset:0; background:rgba(4,7,13,0.7); backdrop-filter:blur(4px);
     display:flex; align-items:flex-end; justify-content:center; z-index:100;
@@ -258,11 +261,11 @@
   .modal-title .close{cursor:pointer; color:var(--sub); font-size:20px;}
 
   .toast{
-    position:fixed; top:14px; left:50%; transform:translateX(-50%); z-index:200;
+    position:fixed; top:calc(14px + env(safe-area-inset-top)); left:50%; transform:translateX(-50%); z-index:200;
     background:rgba(0,191,255,0.16); border:1px solid rgba(0,191,255,0.5); color:var(--text);
     padding:10px 20px; border-radius:30px; font-size:13px; backdrop-filter:blur(10px);
     box-shadow:0 0 20px rgba(0,191,255,0.35);
-    opacity:0; pointer-events:none; transition:.25s;
+    opacity:0; pointer-events:none; transition:.25s; text-align:center; max-width:90%;
   }
   .toast.show{opacity:1; transform:translate(-50%, 6px);}
 
@@ -274,6 +277,11 @@
   .row-between{display:flex; align-items:center; justify-content:space-between;}
   .small-btn{font-size:12px; color:var(--tech); background:none; border:none; cursor:pointer; font-family:inherit;}
   .export-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px;}
+  .share-grid{display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-top:10px;}
+  .offline-pill{
+    display:inline-flex; align-items:center; gap:6px; font-size:11px; color:var(--expense);
+    background:rgba(245,69,92,0.12); border:1px solid rgba(245,69,92,0.35); padding:5px 10px; border-radius:20px; margin-top:8px;
+  }
 </style>
 </head>
 <body>
@@ -286,6 +294,7 @@
       <div class="brand-sub" id="todayLabel">--</div>
     </div>
   </div>
+  <div id="offlinePill" class="offline-pill hide">📡 離線模式：資料仍會儲存在本機</div>
 </div>
 
 <div class="page">
@@ -301,12 +310,10 @@
         <div class="orb-date" id="homeDateLine">--</div>
       </div>
       <div class="grid2">
-        <div class="stat-tile"><div class="lbl">今日收入</div><div class="val income num" id="homeTodayIncome">$0</div></div>
-        <div class="stat-tile"><div class="lbl">今日支出</div><div class="val expense num" id="homeTodayExpense">$0</div></div>
         <div class="stat-tile"><div class="lbl">本月收入</div><div class="val income num" id="homeMonthIncome">$0</div></div>
         <div class="stat-tile"><div class="lbl">本月支出</div><div class="val expense num" id="homeMonthExpense">$0</div></div>
         <div class="stat-tile"><div class="lbl">本月結餘</div><div class="val balance num" id="homeMonthBalance">$0</div></div>
-        <div class="stat-tile"><div class="lbl">剩餘可用額度</div><div class="val balance num" id="homeRemainBudget">$0</div></div>
+        <div class="stat-tile"><div class="lbl">剩餘零用金</div><div class="val balance num" id="homeRemainPetty">$0</div></div>
       </div>
       <div id="homeBudgetAlert" class="badge-over hide">⚠ 本月支出已超過預算</div>
     </div>
@@ -366,6 +373,11 @@
       <span class="ic">🔍</span>
       <input type="text" id="searchInput" placeholder="搜尋日期／金額／分類／備註" oninput="renderList()">
     </div>
+    <div class="month-switch">
+      <div class="m-btn" onclick="shiftListMonth(-1)">‹</div>
+      <div class="m-label num" id="listMonthLabel">全部月份</div>
+      <div class="m-btn" onclick="shiftListMonth(1)">›</div>
+    </div>
     <div id="listContainer"></div>
   </div>
 
@@ -380,12 +392,16 @@
       <div class="grid2">
         <div class="stat-tile"><div class="lbl">本月收入</div><div class="val income num" id="statsIncome">$0</div></div>
         <div class="stat-tile"><div class="lbl">本月支出</div><div class="val expense num" id="statsExpense">$0</div></div>
+        <div class="stat-tile"><div class="lbl">本月結餘</div><div class="val balance num" id="statsBalance">$0</div></div>
+        <div class="stat-tile"><div class="lbl">剩餘零用金</div><div class="val balance num" id="statsRemainPetty">$0</div></div>
       </div>
-      <div class="stat-tile" style="margin-top:12px;"><div class="lbl">本月結餘</div><div class="val balance num" id="statsBalance">$0</div></div>
     </div>
 
     <div class="section-title">支出分類佔比</div>
     <div class="card"><canvas id="pieChart" height="220"></canvas></div>
+
+    <div class="section-title">寄件次數統計</div>
+    <div class="card" id="statsShipStats"></div>
 
     <div class="section-title">近 6 個月趨勢</div>
     <div class="card"><canvas id="barChart" height="220"></canvas></div>
@@ -393,6 +409,17 @@
 
   <!-- ===================== SETTINGS ===================== -->
   <div id="tab-settings" class="hide">
+    <div class="section-title">安裝 App</div>
+    <div class="card">
+      <div id="installBtnWrap" class="hide">
+        <button class="btn-primary" style="margin-top:0;" onclick="installApp()">📲 安裝到主畫面（Android）</button>
+      </div>
+      <div style="font-size:12px; color:var(--sub); line-height:1.7; margin-top:10px;">
+        <b style="color:var(--text);">iPhone 安裝方式：</b>用 Safari 開啟本頁 → 點選下方「分享」圖示 → 選擇「加入主畫面」。<br>
+        <b style="color:var(--text);">Android 安裝方式：</b>用 Chrome 開啟本頁 → 點上方按鈕，或瀏覽器選單中選擇「安裝應用程式」。
+      </div>
+    </div>
+
     <div class="section-title">預算管理</div>
     <div class="card">
       <div class="field" style="margin-top:0;">
@@ -425,6 +452,15 @@
         <input type="file" id="restoreFile" accept="application/json" style="color:var(--sub); font-size:12px;">
       </div>
       <button class="btn-ghost" onclick="restoreJSON()">還原資料</button>
+      <div style="font-size:11px; color:var(--sub); margin-top:14px; line-height:1.6;">
+        所有紀錄都儲存在您手機瀏覽器的 IndexedDB 本機資料庫中，不會上傳到任何伺服器；清除瀏覽器資料或解除安裝會清空紀錄，建議定期使用「資料備份」保存 JSON 檔。
+      </div>
+    </div>
+
+    <div class="section-title">儲存狀態診斷</div>
+    <div class="card">
+      <div id="storageStatus" style="font-size:12px; color:var(--sub); line-height:1.8;">檢查中...</div>
+      <button class="btn-ghost" onclick="runStorageCheck()">重新檢查</button>
     </div>
   </div>
 
@@ -444,6 +480,71 @@
 <div id="reportModalRoot"></div>
 
 <script>
+/* ==========================================================
+   IndexedDB storage layer
+   ========================================================== */
+const DB_NAME = 'fxvicDB';
+const DB_VERSION = 1;
+let dbInstance = null;
+
+function openDB(){
+  return new Promise((resolve, reject)=>{
+    if(dbInstance) return resolve(dbInstance);
+    const req = indexedDB.open(DB_NAME, DB_VERSION);
+    req.onupgradeneeded = (e)=>{
+      const db = e.target.result;
+      // 版本升級時只「新增」缺少的 store，不刪除既有資料，避免更新造成資料遺失。
+      // 未來若需修改結構，請依 e.oldVersion 判斷並在此新增遷移邏輯。
+      if(!db.objectStoreNames.contains('records')){
+        db.createObjectStore('records', {keyPath:'id'});
+      }
+      if(!db.objectStoreNames.contains('settings')){
+        db.createObjectStore('settings', {keyPath:'key'});
+      }
+    };
+    req.onsuccess = (e)=>{ dbInstance = e.target.result; resolve(dbInstance); };
+    req.onerror = (e)=> reject(e.target.error);
+  });
+}
+async function idbGetAll(storeName){
+  const db = await openDB();
+  return new Promise((resolve, reject)=>{
+    const tx = db.transaction(storeName, 'readonly');
+    const req = tx.objectStore(storeName).getAll();
+    req.onsuccess = ()=> resolve(req.result || []);
+    req.onerror = ()=> reject(req.error);
+  });
+}
+async function idbGet(storeName, key){
+  const db = await openDB();
+  return new Promise((resolve, reject)=>{
+    const tx = db.transaction(storeName, 'readonly');
+    const req = tx.objectStore(storeName).get(key);
+    req.onsuccess = ()=> resolve(req.result || null);
+    req.onerror = ()=> reject(req.error);
+  });
+}
+async function idbPut(storeName, value){
+  const db = await openDB();
+  return new Promise((resolve, reject)=>{
+    const tx = db.transaction(storeName, 'readwrite');
+    tx.objectStore(storeName).put(value);
+    tx.oncomplete = ()=> resolve();
+    tx.onerror = ()=> reject(tx.error);
+  });
+}
+async function idbClearAndBulkPut(storeName, items){
+  const db = await openDB();
+  return new Promise((resolve, reject)=>{
+    const tx = db.transaction(storeName, 'readwrite');
+    const store = tx.objectStore(storeName);
+    store.clear();
+    items.forEach(it=> store.put(it));
+    tx.oncomplete = ()=> resolve();
+    tx.onerror = ()=> reject(tx.error);
+  });
+}
+
 /* ============ Constants ============ */
 const EXPENSE_CATS = [
   {k:'寄件', ic:'📦'}, {k:'飲食', ic:'🍜'}, {k:'交通費', ic:'🚗'}, {k:'其他', ic:'📋'}
@@ -469,25 +570,24 @@ let currentTab = 'home';
 let addType = 'expense';
 let selectedCat = '';
 let statsDate = new Date();
+let listMonthDate = null; // null = 全部月份
 let editingId = null;
 let pieChartInst = null, barChartInst = null;
 
-/* ============ Storage helpers ============ */
+/* ============ Data load/save ============ */
 async function loadData(){
+  await openDB();
+  try{ records = await idbGetAll('records'); }catch(e){ records = []; }
   try{
-    const r = await window.storage.get('records', false);
-    records = r ? JSON.parse(r.value) : [];
-  }catch(e){ records = []; }
-  try{
-    const s = await window.storage.get('settings', false);
-    settings = s ? JSON.parse(s.value) : {budget:0, reminderTime:''};
+    const s = await idbGet('settings','app');
+    settings = s ? {budget:s.budget||0, reminderTime:s.reminderTime||''} : {budget:0, reminderTime:''};
   }catch(e){ settings = {budget:0, reminderTime:''}; }
 }
 async function saveRecords(){
-  try{ await window.storage.set('records', JSON.stringify(records), false); }catch(e){ console.error(e); }
+  try{ await idbClearAndBulkPut('records', records); }catch(e){ console.error(e); showToast('儲存失敗，請確認裝置儲存空間'); }
 }
 async function saveSettingsToStore(){
-  try{ await window.storage.set('settings', JSON.stringify(settings), false); }catch(e){ console.error(e); }
+  try{ await idbPut('settings', Object.assign({key:'app'}, settings)); }catch(e){ console.error(e); }
 }
 
 /* ============ Utils ============ */
@@ -496,6 +596,7 @@ function todayStr(){ const d=new Date(); return d.toISOString().slice(0,10); }
 function fmt(n){ n = Number(n)||0; return (n<0?'-$':'$') + Math.abs(n).toLocaleString('en-US'); }
 function ym(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'); }
 function isSameMonth(dateStr, ymStr){ return dateStr.slice(0,7)===ymStr; }
+function escapeHtml(s){ return s.replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
 function showToast(msg){
   const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
   clearTimeout(showToast._tm); showToast._tm=setTimeout(()=>t.classList.remove('show'),1800);
@@ -517,34 +618,33 @@ function switchTab(tab){
 function goAdd(type){ addType=type; switchTab('add'); }
 
 /* ============ HOME ============ */
+function computeTotalBalance(){
+  let inc=0, exp=0;
+  records.forEach(r=>{ if(r.type==='income') inc+=Number(r.amount); else exp+=Number(r.amount); });
+  return inc-exp;
+}
 function renderHome(){
   const today = todayStr();
   const curYm = ym(new Date());
-  let totalIncome=0, totalExpense=0, todayIncome=0, todayExpense=0, monthIncome=0, monthExpense=0;
+  let monthIncome=0, monthExpense=0;
   records.forEach(r=>{
-    if(r.type==='income') totalIncome+=Number(r.amount); else totalExpense+=Number(r.amount);
-    if(r.date===today){ if(r.type==='income') todayIncome+=Number(r.amount); else todayExpense+=Number(r.amount); }
     if(isSameMonth(r.date,curYm)){ if(r.type==='income') monthIncome+=Number(r.amount); else monthExpense+=Number(r.amount); }
   });
-  const totalBalance = totalIncome-totalExpense;
   const monthBalance = monthIncome-monthExpense;
-  const remainBudget = (settings.budget||0) - monthExpense;
+  const totalBalance = computeTotalBalance();
 
   document.getElementById('todayLabel').textContent = today.replaceAll('-','/');
   document.getElementById('homeTotalBalance').textContent = fmt(totalBalance);
   document.getElementById('homeDateLine').textContent = '今日 ' + today.replaceAll('-','/');
-  document.getElementById('homeTodayIncome').textContent = fmt(todayIncome);
-  document.getElementById('homeTodayExpense').textContent = fmt(todayExpense);
   document.getElementById('homeMonthIncome').textContent = fmt(monthIncome);
   document.getElementById('homeMonthExpense').textContent = fmt(monthExpense);
   document.getElementById('homeMonthBalance').textContent = fmt(monthBalance);
-  document.getElementById('homeRemainBudget').textContent = settings.budget ? fmt(remainBudget) : '未設定';
+  document.getElementById('homeRemainPetty').textContent = fmt(totalBalance);
 
   const alertEl = document.getElementById('homeBudgetAlert');
   if(settings.budget && monthExpense > settings.budget){ alertEl.classList.remove('hide'); }
   else{ alertEl.classList.add('hide'); }
 
-  // shipping stats
   const shipCounts = {'全家寄件':0,'7-11寄件':0,'郵局寄件':0};
   let shipTotal = 0;
   records.filter(r=>r.type==='expense' && isSameMonth(r.date,curYm) && r.category==='寄件').forEach(r=>{
@@ -559,7 +659,6 @@ function renderHome(){
       <div class="stat-tile"><div class="lbl">寄件總花費</div><div class="val expense num">${fmt(shipTotal)}</div></div>
     </div>`;
 
-  // income stats
   const pettyCount = records.filter(r=>r.type==='income' && isSameMonth(r.date,curYm) && r.category==='零用金').length;
   const incomeList = records.filter(r=>r.type==='income' && isSameMonth(r.date,curYm));
   const avgIncome = incomeList.length ? (monthIncome/incomeList.length) : 0;
@@ -572,16 +671,12 @@ function renderHome(){
 }
 
 /* ============ ADD ============ */
-function setAddType(type){
-  addType = type; selectedCat = '';
-  renderAdd();
-}
+function setAddType(type){ addType = type; selectedCat = ''; renderAdd(); }
 function renderAdd(){
   document.getElementById('typeIncomeBtn').classList.toggle('active', addType==='income');
   document.getElementById('typeExpenseBtn').classList.toggle('active', addType==='expense');
   document.getElementById('fDate').value = document.getElementById('fDate').value || todayStr();
 
-  // shortcuts
   const sc = SHORTCUTS[addType];
   document.getElementById('shortcutList').innerHTML = sc.map((s,i)=>`
     <div class="quick-shortcut" onclick="fireShortcut('${addType}', ${i})">
@@ -596,7 +691,6 @@ function renderAdd(){
     </div>
   `).join('');
 
-  // categories
   const cats = addType==='income' ? INCOME_CATS : EXPENSE_CATS;
   if(!cats.find(c=>c.k===selectedCat)) selectedCat = cats[0].k;
   document.getElementById('catGrid').innerHTML = cats.map(c=>`
@@ -607,15 +701,12 @@ function pickCat(k){ selectedCat=k; renderAdd(); }
 
 function fireShortcut(type, idx){
   const s = SHORTCUTS[type][idx];
-  const rec = {
-    id: uid(), type, date: todayStr(), amount: s.amount, category: s.category, note: s.name, createdAt: Date.now()
-  };
+  const rec = { id: uid(), type, date: todayStr(), amount: s.amount, category: s.category, note: s.name, createdAt: Date.now() };
   records.push(rec);
   saveRecords();
   showToast(`已新增：${s.name} ${fmt(s.amount)}`);
   refreshAll();
 }
-
 function submitForm(){
   const date = document.getElementById('fDate').value || todayStr();
   const amount = parseFloat(document.getElementById('fAmount').value);
@@ -640,13 +731,21 @@ function submitForm(){
 }
 
 /* ============ LIST ============ */
+function shiftListMonth(delta){
+  if(!listMonthDate){ listMonthDate = new Date(); }
+  else{ listMonthDate.setMonth(listMonthDate.getMonth()+delta); }
+  renderList();
+}
 function renderList(){
   const q = (document.getElementById('searchInput').value||'').trim().toLowerCase();
+  document.getElementById('listMonthLabel').textContent = listMonthDate
+    ? (listMonthDate.getFullYear()+'/'+String(listMonthDate.getMonth()+1).padStart(2,'0'))
+    : '全部月份';
+
   let items = [...records].sort((a,b)=> b.date.localeCompare(a.date) || b.createdAt-a.createdAt);
+  if(listMonthDate){ items = items.filter(r=> isSameMonth(r.date, ym(listMonthDate))); }
   if(q){
-    items = items.filter(r=>{
-      return r.date.includes(q) || String(r.amount).includes(q) || r.category.toLowerCase().includes(q) || (r.note||'').toLowerCase().includes(q);
-    });
+    items = items.filter(r=> r.date.includes(q) || String(r.amount).includes(q) || r.category.toLowerCase().includes(q) || (r.note||'').toLowerCase().includes(q));
   }
   const box = document.getElementById('listContainer');
   if(items.length===0){ box.innerHTML = '<div class="empty-state">尚無符合的紀錄</div>'; return; }
@@ -669,8 +768,6 @@ function renderList(){
     </div>
   `).join('');
 }
-function escapeHtml(s){ return s.replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
-
 function removeRecord(id){
   if(!confirm('確定要刪除這筆紀錄嗎？')) return;
   records = records.filter(r=>r.id!==id);
@@ -691,26 +788,37 @@ function openEdit(id){
 }
 
 /* ============ STATS ============ */
-function shiftMonth(delta){
-  statsDate.setMonth(statsDate.getMonth()+delta);
-  renderStats();
-}
+function shiftMonth(delta){ statsDate.setMonth(statsDate.getMonth()+delta); renderStats(); }
 function renderStats(){
   const curYm = ym(statsDate);
   document.getElementById('statsMonthLabel').textContent = statsDate.getFullYear()+' / '+String(statsDate.getMonth()+1).padStart(2,'0');
 
   let income=0, expense=0;
   const catTotals = {};
+  const shipCounts = {'全家寄件':0,'7-11寄件':0,'郵局寄件':0};
   records.forEach(r=>{
     if(!isSameMonth(r.date,curYm)) return;
     if(r.type==='income') income+=Number(r.amount);
-    else{ expense+=Number(r.amount); catTotals[r.category]=(catTotals[r.category]||0)+Number(r.amount); }
+    else{
+      expense+=Number(r.amount);
+      catTotals[r.category]=(catTotals[r.category]||0)+Number(r.amount);
+      if(r.category==='寄件' && shipCounts.hasOwnProperty(r.note)) shipCounts[r.note]++;
+    }
   });
   document.getElementById('statsIncome').textContent = fmt(income);
   document.getElementById('statsExpense').textContent = fmt(expense);
   document.getElementById('statsBalance').textContent = fmt(income-expense);
+  document.getElementById('statsRemainPetty').textContent = fmt(computeTotalBalance());
 
-  // Pie chart
+  const shipTotal = shipCounts['全家寄件']*0 + (catTotals['寄件']||0);
+  document.getElementById('statsShipStats').innerHTML = `
+    <div class="grid2" style="margin-top:0;">
+      <div class="stat-tile"><div class="lbl">全家寄件次數</div><div class="val num">${shipCounts['全家寄件']}</div></div>
+      <div class="stat-tile"><div class="lbl">7-11寄件次數</div><div class="val num">${shipCounts['7-11寄件']}</div></div>
+      <div class="stat-tile"><div class="lbl">郵局寄件次數</div><div class="val num">${shipCounts['郵局寄件']}</div></div>
+      <div class="stat-tile"><div class="lbl">寄件總花費</div><div class="val expense num">${fmt(shipTotal)}</div></div>
+    </div>`;
+
   const pieLabels = Object.keys(catTotals);
   const pieData = Object.values(catTotals);
   const pieColors = ['#00BFFF','#4CC9F0','#f5455c','#7c93ad','#22c55e'];
@@ -721,7 +829,6 @@ function renderStats(){
     options:{ plugins:{ legend:{ labels:{ color:'#e8f1fb', font:{family:"'Noto Sans TC'", size:12} } } }, cutout:'62%' }
   });
 
-  // Bar chart - last 6 months
   const months = [];
   for(let i=5;i>=0;i--){ const d=new Date(statsDate.getFullYear(), statsDate.getMonth()-i, 1); months.push(d); }
   const labels = months.map(d=>(d.getMonth()+1)+'月');
@@ -761,6 +868,7 @@ function renderSettings(){
   const fill = document.getElementById('budgetFill');
   fill.style.width = pct+'%';
   fill.classList.toggle('over', settings.budget>0 && monthExpense>settings.budget);
+  runStorageCheck();
 }
 async function saveBudget(){
   settings.budget = parseFloat(document.getElementById('budgetInput').value) || 0;
@@ -775,10 +883,18 @@ async function saveReminder(){
 }
 
 /* ============ Export / Backup ============ */
+function downloadBlob(content, type, filename){
+  const blob = new Blob([content], {type});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
 function exportCSV(){
   if(records.length===0){ showToast('尚無資料可匯出'); return; }
   const rows = [['日期','類型','分類','金額','備註']];
-  records.sort((a,b)=>a.date.localeCompare(b.date)).forEach(r=>{
+  records.slice().sort((a,b)=>a.date.localeCompare(b.date)).forEach(r=>{
     rows.push([r.date, r.type==='income'?'收入':'支出', r.category, r.amount, (r.note||'').replace(/,/g,'，')]);
   });
   const csv = '\uFEFF' + rows.map(r=>r.join(',')).join('\n');
@@ -818,14 +934,6 @@ async function exportPDF(){
   pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 20, 20, imgW, imgH);
   pdf.save('零用金紀錄.pdf');
   showToast('PDF 已匯出');
-}
-function downloadBlob(content, type, filename){
-  const blob = new Blob([content], {type});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = filename;
-  document.body.appendChild(a); a.click(); document.body.removeChild(a);
-  URL.revokeObjectURL(url);
 }
 function backupJSON(){
   const payload = JSON.stringify({records, settings}, null, 2);
@@ -872,12 +980,9 @@ function buildReportData(){
     }
   });
   details.sort((a,b)=>a.date.localeCompare(b.date));
-  let totalIncomeAll=0, totalExpenseAll=0;
-  records.forEach(r=>{ if(r.type==='income') totalIncomeAll+=Number(r.amount); else totalExpenseAll+=Number(r.amount); });
-  const remainPetty = totalIncomeAll - totalExpenseAll;
+  const remainPetty = computeTotalBalance();
   return {key, monthLabel, income, expense, balance: income-expense, remainPetty, catTotals, details};
 }
-
 function openReport(){ reportBossMode=false; renderReportModal(); }
 function closeReport(){ document.getElementById('reportModalRoot').innerHTML=''; }
 function toggleBossMode(){ reportBossMode = !reportBossMode; renderReportModal(); }
@@ -899,7 +1004,6 @@ function renderReportModal(){
     {lbl:'本月結餘', val:d.balance, color:'#4CC9F0'},
   ];
   if(!reportBossMode) tiles.push({lbl:'剩餘零用金', val:d.remainPetty, color:'#4CC9F0'});
-
   const tilesHtml = tiles.map(t=>`
     <div style="background:rgba(255,255,255,0.04); border-radius:12px; padding:10px 12px;">
       <div style="font-size:11px; color:#7c93ad;">${t.lbl}</div>
@@ -914,7 +1018,7 @@ function renderReportModal(){
           <span class="close" onclick="closeReport()">✕</span>
         </div>
         <div class="row-between" style="margin-bottom:14px;">
-          <span style="font-size:13px; color:var(--sub);">老闆模式（簡潔報表，隱藏操作按鈕）</span>
+          <span style="font-size:13px; color:var(--sub);">老闆模式（簡潔報表）</span>
           <input type="checkbox" ${reportBossMode?'checked':''} onchange="toggleBossMode()" style="width:18px;height:18px;accent-color:#00BFFF;">
         </div>
         <div id="reportCapture" style="background:#0D1B2A; border-radius:16px; padding:20px; border:1px solid rgba(0,191,255,0.2);">
@@ -922,9 +1026,7 @@ function renderReportModal(){
             <div style="font-size:16px; font-weight:700; color:#e8f1fb;">匯倬FXVIC${reportBossMode?'':' 零用金使用紀錄'}</div>
             <div style="font-size:13px; color:#7c93ad; margin-top:4px;">${d.monthLabel}</div>
           </div>
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px;">
-            ${tilesHtml}
-          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px;">${tilesHtml}</div>
           <div style="font-size:12px; color:#7c93ad; margin-bottom:8px; letter-spacing:1px;">支出明細</div>
           <table style="width:100%; border-collapse:collapse; font-size:12px; color:#e8f1fb;">
             <thead>
@@ -935,9 +1037,7 @@ function renderReportModal(){
                 <th style="text-align:left; padding:6px 4px; border-bottom:1px solid rgba(255,255,255,0.15);">備註</th>
               </tr>
             </thead>
-            <tbody>
-              ${detailRows || '<tr><td colspan="4" style="padding:10px 4px; color:#7c93ad;">本月尚無支出紀錄</td></tr>'}
-            </tbody>
+            <tbody>${detailRows || '<tr><td colspan="4" style="padding:10px 4px; color:#7c93ad;">本月尚無支出紀錄</td></tr>'}</tbody>
           </table>
           <div style="margin-top:16px; display:grid; grid-template-columns:1fr 1fr; gap:8px;">
             <div style="background:rgba(255,255,255,0.03); border-radius:10px; padding:8px 10px; font-size:12px;">寄件小計：<b>$${d.catTotals['寄件'].toLocaleString()}</b></div>
@@ -947,26 +1047,28 @@ function renderReportModal(){
           </div>
           <div style="margin-top:16px; text-align:right; font-size:11px; color:#7c93ad;">製表日期：${genDate}</div>
         </div>
+
         <div class="export-grid" style="grid-template-columns:1fr 1fr 1fr;">
           <button class="quick-btn" onclick="exportReportPNG()">🖼 PNG</button>
           <button class="quick-btn" onclick="exportReportPDF()">📄 PDF</button>
           <button class="quick-btn" onclick="exportReportExcel()">📊 Excel</button>
         </div>
-        <button class="btn-primary" onclick="shareReport()">📤 分享報表</button>
+        <div class="share-grid">
+          <button class="quick-btn neon" onclick="shareToLine()">💬 LINE</button>
+          <button class="quick-btn neon" onclick="shareToOther()">📤 其他分享</button>
+          <button class="quick-btn neon" onclick="saveImageToPhone()">🖼 存到相簿</button>
+        </div>
       </div>
     </div>`;
 }
-
 function reportFileName(ext){
   const d = buildReportData();
   return reportBossMode ? `匯倬FXVIC_${d.key}.${ext}` : `匯倬FXVIC_零用金使用紀錄_${d.key}.${ext}`;
 }
-
 async function captureReportCanvas(){
   const el = document.getElementById('reportCapture');
   return await html2canvas(el, {backgroundColor:'#0D1B2A', scale:2});
 }
-
 async function exportReportPNG(){
   showToast('正在產生 PNG...');
   const canvas = await captureReportCanvas();
@@ -990,17 +1092,13 @@ async function exportReportPDF(){
 function exportReportExcel(){
   const d = buildReportData();
   const summary = [
-    {項目:'本月收入', 金額:d.income},
-    {項目:'本月支出', 金額:d.expense},
-    {項目:'本月結餘', 金額:d.balance},
-    {項目:'剩餘零用金', 金額:d.remainPetty},
+    {項目:'本月收入', 金額:d.income}, {項目:'本月支出', 金額:d.expense},
+    {項目:'本月結餘', 金額:d.balance}, {項目:'剩餘零用金', 金額:d.remainPetty},
   ];
   const details = d.details.map(r=>({日期:r.date, 分類:r.category, 金額:r.amount, 備註:r.note||''}));
   const catStats = [
-    {分類:'寄件', 小計:d.catTotals['寄件']},
-    {分類:'飲食', 小計:d.catTotals['飲食']},
-    {分類:'交通費', 小計:d.catTotals['交通費']},
-    {分類:'其他', 小計:d.catTotals['其他']},
+    {分類:'寄件', 小計:d.catTotals['寄件']}, {分類:'飲食', 小計:d.catTotals['飲食']},
+    {分類:'交通費', 小計:d.catTotals['交通費']}, {分類:'其他', 小計:d.catTotals['其他']},
   ];
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(summary), '摘要');
@@ -1009,7 +1107,15 @@ function exportReportExcel(){
   XLSX.writeFile(wb, reportFileName('xlsx'));
   showToast('報表 Excel 已匯出');
 }
-async function shareReport(){
+function reportShareText(){
+  const d = buildReportData();
+  return `匯倬FXVIC 零用金使用紀錄\n${d.monthLabel}\n本月收入：$${d.income.toLocaleString()}\n本月支出：$${d.expense.toLocaleString()}\n本月結餘：$${d.balance.toLocaleString()}\n剩餘零用金：$${d.remainPetty.toLocaleString()}`;
+}
+function shareToLine(){
+  const url = 'https://line.me/R/msg/text/?' + encodeURIComponent(reportShareText());
+  window.open(url, '_blank');
+}
+async function shareToOther(){
   showToast('正在準備分享...');
   const canvas = await captureReportCanvas();
   canvas.toBlob(async (blob)=>{
@@ -1017,19 +1123,33 @@ async function shareReport(){
     const file = new File([blob], filename, {type:'image/png'});
     if(navigator.share && navigator.canShare && navigator.canShare({files:[file]})){
       try{
-        await navigator.share({ files:[file], title:'匯倬FXVIC 零用金使用紀錄月報', text:'本月零用金使用報表' });
+        await navigator.share({ files:[file], title:'匯倬FXVIC 零用金使用紀錄月報', text: reportShareText() });
         showToast('已開啟分享選單');
-      }catch(err){
-        if(err.name!=='AbortError') showToast('分享已取消');
-      }
+      }catch(err){ if(err.name!=='AbortError') showToast('分享已取消'); }
     }else{
       const url = URL.createObjectURL(blob);
       const a=document.createElement('a'); a.href=url; a.download=filename;
       document.body.appendChild(a); a.click(); document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      showToast('此瀏覽器不支援直接分享，已下載圖片，請手動分享至 LINE／Gmail 等');
+      showToast('此瀏覽器不支援分享選單，已下載圖片，請手動分享');
     }
   }, 'image/png');
+}
+async function saveImageToPhone(){
+  showToast('正在準備圖片...');
+  const canvas = await captureReportCanvas();
+  const dataUrl = canvas.toDataURL('image/png');
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  if(isIOS){
+    const w = window.open();
+    if(w){
+      w.document.write(`<body style="margin:0;background:#070B14;"><img src="${dataUrl}" style="width:100%;display:block;"><p style="font-family:sans-serif;color:#e8f1fb;text-align:center;padding:14px;">長按圖片並選擇「儲存圖片」即可存到相簿</p></body>`);
+    }else{ showToast('請允許彈出視窗以儲存圖片'); }
+  }else{
+    const a=document.createElement('a'); a.href=dataUrl; a.download=reportFileName('png');
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    showToast('圖片已下載，可從相簿/下載內查看');
+  }
 }
 
 /* ============ Reminder check ============ */
@@ -1052,10 +1172,95 @@ function refreshAll(){
   if(currentTab==='settings') renderSettings();
 }
 
+/* ============ Online/offline indicator ============ */
+function updateOnlineStatus(){
+  document.getElementById('offlinePill').classList.toggle('hide', navigator.onLine);
+}
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+
+/* ============ PWA install prompt ============ */
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', (e)=>{
+  e.preventDefault();
+  deferredPrompt = e;
+  const wrap = document.getElementById('installBtnWrap');
+  if(wrap) wrap.classList.remove('hide');
+});
+async function installApp(){
+  if(!deferredPrompt) return;
+  deferredPrompt.prompt();
+  await deferredPrompt.userChoice;
+  deferredPrompt = null;
+  document.getElementById('installBtnWrap').classList.add('hide');
+}
+window.addEventListener('appinstalled', ()=>{ showToast('已安裝到主畫面！'); });
+
+/* ============ Storage diagnostics ============ */
+async function runStorageCheck(){
+  const el = document.getElementById('storageStatus');
+  if(!el) return;
+  el.textContent = '檢查中...';
+  const lines = [];
+
+  // 1) IndexedDB 讀寫測試
+  try{
+    await idbPut('settings', {key:'__diagnostic__', ts: Date.now()});
+    const back = await idbGet('settings','__diagnostic__');
+    lines.push(back ? '✅ IndexedDB 讀寫正常' : '⚠ IndexedDB 寫入後讀取為空');
+  }catch(e){
+    lines.push('❌ IndexedDB 無法使用：'+ (e && e.message ? e.message : e));
+  }
+
+  // 2) 目前資料筆數
+  lines.push(`📦 目前已儲存 ${records.length} 筆紀錄`);
+
+  // 3) 持久化儲存狀態
+  if(navigator.storage && navigator.storage.persisted){
+    try{
+      const persisted = await navigator.storage.persisted();
+      lines.push(persisted ? '✅ 儲存空間已標記為持久化（不易被系統自動清除）' : '⚠ 尚未標記為持久化（系統在空間不足時可能清除資料）');
+    }catch(e){ lines.push('ℹ 無法取得持久化狀態'); }
+  }else{
+    lines.push('ℹ 此瀏覽器不支援持久化狀態查詢（iOS Safari 為正常現象）');
+  }
+
+  // 4) 執行模式（是否以主畫面 App 開啟）
+  lines.push(isStandalone() ? '✅ 目前以「主畫面安裝」模式執行' : 'ℹ 目前在瀏覽器分頁中開啟（建議加入主畫面後測試，兩者儲存空間各自獨立）');
+
+  // 5) 儲存用量估算
+  if(navigator.storage && navigator.storage.estimate){
+    try{
+      const est = await navigator.storage.estimate();
+      const usedMB = ((est.usage||0)/1024/1024).toFixed(2);
+      const quotaMB = ((est.quota||0)/1024/1024).toFixed(0);
+      lines.push(`📊 已使用約 ${usedMB} MB／可用上限約 ${quotaMB} MB`);
+    }catch(e){}
+  }
+
+  el.innerHTML = lines.join('<br>');
+}
+function isStandalone(){
+  return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+}
+
+/* ============ Service worker registration ============ */
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('./service-worker.js').catch(err=>console.error('SW register failed', err));
+  });
+}
+
 /* ============ Init ============ */
 (async function init(){
+  // 請求瀏覽器將此網站的儲存空間標記為「持久化」，降低系統在空間不足時
+  // 自動清除資料的機率（iOS Safari 對此 API 支援有限，但不影響功能）。
+  if(navigator.storage && navigator.storage.persist){
+    try{ await navigator.storage.persist(); }catch(e){ /* 忽略不支援的瀏覽器 */ }
+  }
   await loadData();
   document.getElementById('fDate').value = todayStr();
+  updateOnlineStatus();
   switchTab('home');
 })();
 </script>
